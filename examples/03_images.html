@@ -87,7 +87,7 @@
       
       <!-- IMPORTANT: Make sure your video is compressed for mobile! -->
       <!-- I removed 'autoplay' because the component now controls playback. -->
-      <video id="main-video" src="../assets/Targets/Final/Video-1.mp4" loop muted playsinline crossorigin="anonymous"></video>
+      <video id="main-video" src="../assets/Targets/Final/Video1.mp4" loop muted playsinline crossorigin="anonymous"></video>
       
       <!-- 1. Add your audio file here. Replace the src with your audio file path. -->
       <audio id="background-sound" src="../assets/Targets/Final/Audio.mp3" loop preload="auto" crossorigin="anonymous"></audio>
@@ -103,11 +103,11 @@
 
       <!-- Instance 2 — middle layer -->
       <a-entity
-      geometry="primitive: plane; width: 1; height: 1.5"
-      material="shader: chromakey; src: #main-video; chroma: true; color: #00FF33;"
-      position="0.25 0.3 0.4">
-    </a-entity>
-    
+        geometry="primitive: plane; width: 1; height: 1.5"
+        material="shader: chromakey; src: #main-video; chroma: true; color: #00FF33;"
+        position="0.27 0.3 0.3">
+      </a-entity>
+
       <!-- Instance 3 — cloud layer -->
       <a-image src="#cloud" position="0.2 0.3 0.6" width="1.5" height="3"></a-image>
 
