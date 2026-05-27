@@ -73,8 +73,9 @@
 
     <!-- Preload image asset -->
     <a-assets>
-      <img id="frontview" src="../assets/Targets/Final/burger1.png" crossorigin="anonymous">
-      <img id="background" src="../assets/Targets/Final/Background1.png" crossorigin="anonymous">
+      <img id="frontview" src="../assets/Targets/Final/frontview.png" crossorigin="anonymous">
+      <img id="background" src="../assets/Targets/Final/Background.png" crossorigin="anonymous">
+      <img id="cloud" src="../assets/Targets/Final/cloud.png" crossorigin="anonymous">
       <video id="main-video" src="../assets/Targets/Final/Video-1.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
     </a-assets>
 
@@ -93,7 +94,8 @@
       <a-video src="#main-video" position="0 0.3 0.3" width="1.5" height="3"></a-video>
 
       <!-- Instance 3 — front layer -->
-      <a-image src="#frontview" position="0 0.3 0.6" width="1.5" height="3"></a-image>
+      <a-image src="#cloud" position="0 0.3 0.6" width="1.5" height="3"></a-image>
+      <a-image src="#frontview" position="0 0.3 0.9" width="1.5" height="3"></a-image>
 
     </xrextras-named-image-target>
 
