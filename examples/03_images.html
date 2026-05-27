@@ -12,8 +12,8 @@
   <script async src="../engine/xr.js" data-preload-chunks="slam"></script>
 
   <!-- Component to play/pause media on image target detection -->
+  <!-- 用于在图像扫描时控制媒体播放/暂停的组件 -->
   <script>
-    // This new component can control both a video and an audio element.
     AFRAME.registerComponent('media-control-on-scan', {
       schema: {
         video: {type: 'selector'},
@@ -23,26 +23,31 @@
         this.video = this.data.video;
         this.audio = this.data.audio;
 
-        // Pause media initially.
         if (this.video) this.video.pause();
         if (this.audio) this.audio.pause();
 
-        // Define functions to be called on find/loss.
         this.onFound = () => {
+          // --- 这里是关键的修复 ---
+          // 在播放前，将媒体的播放时间重置为 0。
+          // 这会创建一个可靠的“重新开始”，而不是一个脆弱的“恢复播放”。
+          if (this.video) this.video.currentTime = 0;
+          if (this.audio) this.audio.currentTime = 0;
+          // --- 修复结束 ---
+
           if (this.video) this.video.play();
           if (this.audio) this.audio.play();
         };
+        
         this.onLost = () => {
           if (this.video) this.video.pause();
           if (this.audio) this.audio.pause();
         };
 
-        // Listen for events on the scene.
+        // 监听场景的事件
         this.el.sceneEl.addEventListener('xrimagefound', this.onFound);
         this.el.sceneEl.addEventListener('xrimagelost', this.onLost);
       },
       remove: function () {
-        // Clean up event listeners when the component is removed.
         if (this.video) this.video.pause();
         if (this.audio) this.audio.pause();
         this.el.sceneEl.removeEventListener('xrimagefound', this.onFound);
@@ -50,6 +55,7 @@
       },
     });
   </script>
+
   
   <!-- Image Target Configuration -->
   <script>
