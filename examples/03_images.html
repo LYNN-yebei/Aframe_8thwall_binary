@@ -11,6 +11,33 @@
   <!-- 8th Wall Engine -->
   <script async src="../engine/xr.js" data-preload-chunks="slam"></script>
 
+  <!-- Component to play/pause video on image target detection -->
+  <script>
+    AFRAME.registerComponent('video-playback-on-scan', {
+      schema: {
+        video: {type: 'selector'},
+      },
+      init: function () {
+        this.video = this.data.video;
+        if (!this.video) return;
+
+        this.video.pause();
+
+        // xrimagefound/xrimagelost fire on <a-scene>, not on the target element
+        this.onFound = () => { this.video.play(); };
+        this.onLost = () => { this.video.pause(); };
+
+        this.el.sceneEl.addEventListener('xrimagefound', this.onFound);
+        this.el.sceneEl.addEventListener('xrimagelost', this.onLost);
+      },
+      remove: function () {
+        if (this.video) this.video.pause();
+        this.el.sceneEl.removeEventListener('xrimagefound', this.onFound);
+        this.el.sceneEl.removeEventListener('xrimagelost', this.onLost);
+      },
+    });
+  </script>
+  
   <!-- Image Target Configuration -->
   <script>
     const onxrloaded = () => {
@@ -48,19 +75,20 @@
 
     <a-camera position="0 4 10"></a-camera>
 
-    <xrextras-named-image-target name="my-poster">
+    <!-- Apply the component here and link it to the video asset -->
+    <xrextras-named-image-target name="my-poster" video-playback-on-scan="video: #main-video;">
 
       <!-- Three instances of the same image, stacked along the Y-axis
            (perpendicular to the poster surface) with slight Z offsets -->
 
       <!-- Instance 1 — back layer -->
-      <a-image src="#background" position="0 0.3 0" width="1.5" height="1.5"></a-image>
+      <a-image src="#background" position="0 0.3 0" width="1.5" height="3"></a-image>
 
       <!-- Instance 2 — middle layer -->
-      <a-video src="#main-video" position="0 0.3 0.3" width="1.5" height="1.5"></a-video>
+      <a-video src="#main-video" position="0 0.3 0.3" width="1.5" height="3"></a-video>
 
       <!-- Instance 3 — front layer -->
-      <a-image src="#frontview" position="0 0.3 0.6" width="1.5" height="1.5"></a-image>
+      <a-image src="#frontview" position="0 0.3 0.6" width="1.5" height="3"></a-image>
 
     </xrextras-named-image-target>
 
