@@ -11,32 +11,37 @@
   <!-- 8th Wall Engine -->
   <script async src="../engine/xr.js" data-preload-chunks="slam"></script>
 
-  <!-- Component to play/pause video on image target detection -->
-  <script>
-    AFRAME.registerComponent('video-playback-on-scan', {
-      schema: {
-        video: {type: 'selector'},
-      },
-      init: function () {
-        this.video = this.data.video;
-        if (!this.video) return;
-
-        this.video.pause();
-
-        // xrimagefound/xrimagelost fire on <a-scene>, not on the target element
-        this.onFound = () => { this.video.play(); };
-        this.onLost = () => { this.video.pause(); };
-
-        this.el.sceneEl.addEventListener('xrimagefound', this.onFound);
-        this.el.sceneEl.addEventListener('xrimagelost', this.onLost);
-      },
-      remove: function () {
-        if (this.video) this.video.pause();
-        this.el.sceneEl.removeEventListener('xrimagefound', this.onFound);
-        this.el.sceneEl.removeEventListener('xrimagelost', this.onLost);
-      },
-    });
-  </script>
+    <!-- Component to play/pause video on image target detection -->
+    <script>
+      AFRAME.registerComponent('video-playback-on-scan', {
+        schema: {
+          video: {type: 'selector'},
+        },
+        init: function () {
+          this.video = this.data.video;
+          if (!this.video) return;
+  
+          this.video.pause();
+  
+          // This is the fix:
+          // Instead of just resuming, we now restart the video every time.
+          this.onFound = () => {
+            this.video.currentTime = 0;  // 1. Reset video to the beginning.
+            this.video.play();           // 2. Play from the start.
+          };
+  
+          this.onLost = () => { this.video.pause(); };
+  
+          this.el.sceneEl.addEventListener('xrimagefound', this.onFound);
+          this.el.sceneEl.addEventListener('xrimagelost', this.onLost);
+        },
+        remove: function () {
+          if (this.video) this.video.pause();
+          this.el.sceneEl.removeEventListener('xrimagefound', this.onFound);
+          this.el.sceneEl.removeEventListener('xrimagelost', this.onLost);
+        },
+      });
+    </script>
   
   <!-- Image Target Configuration -->
   <script>
