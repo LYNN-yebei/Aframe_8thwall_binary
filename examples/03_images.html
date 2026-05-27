@@ -102,8 +102,12 @@
       <a-image src="#background" position="0 0.3 0" width="1.5" height="3"></a-image>
 
       <!-- Instance 2 — middle layer -->
-      <a-video src="#main-video" position="0.27 0.3 0.3" width="1" height="1.5"></a-video>
-
+      <a-entity
+      geometry="primitive: plane; width: 1; height: 1.5"
+      material="shader: chromakey; src: #main-video; chroma: true; color: #00FF33;"
+      position="0.25 0.3 0.4">
+    </a-entity>
+    
       <!-- Instance 3 — cloud layer -->
       <a-image src="#cloud" position="0.2 0.3 0.6" width="1.5" height="3"></a-image>
 
