@@ -41,9 +41,7 @@
 
     <!-- Preload image asset -->
     <a-assets>
-      <img id="frontview" src="../assets/Targets/Final/burger1.png" crossorigin="anonymous">
-      <img id="background" src="../assets/Targets/Final/Background1.png" crossorigin="anonymous">
-      <video id="main-video" src="../assets/Targets/Final/Video-1.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
+      <img id="export1" src="../assets/export1.png" crossorigin="anonymous">
     </a-assets>
 
     <a-camera position="0 4 10"></a-camera>
@@ -54,13 +52,13 @@
            (perpendicular to the poster surface) with slight Z offsets -->
 
       <!-- Instance 1 — back layer -->
-      <a-image src="#background" position="0 0.3 0" width="1.5" height="1.5"></a-image>
+      <a-image src="#export1" position="0 0.3 0" width="1.5" height="1.5"></a-image>
 
       <!-- Instance 2 — middle layer -->
-      <a-video src="#my-video" position="0 0.3 0.3" width="1.5" height="1.5"></a-video>
+      <a-image src="#export1" position="0 0.3 0.3" width="1.5" height="1.5"></a-image>
 
       <!-- Instance 3 — front layer -->
-      <a-image src="#frontview" position="0 0.3 0.6" width="1.5" height="1.5"></a-image>
+      <a-image src="#export1" position="0 0.3 0.6" width="1.5" height="1.5"></a-image>
 
     </xrextras-named-image-target>
 
