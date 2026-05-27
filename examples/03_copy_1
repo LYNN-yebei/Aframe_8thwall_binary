@@ -11,40 +11,27 @@
   <!-- 8th Wall Engine -->
   <script async src="../engine/xr.js" data-preload-chunks="slam"></script>
 
-  <!-- Component to play/pause media on image target detection -->
+  <!-- Component to play/pause video on image target detection -->
   <script>
-    // This new component can control both a video and an audio element.
-    AFRAME.registerComponent('media-control-on-scan', {
+    AFRAME.registerComponent('video-playback-on-scan', {
       schema: {
         video: {type: 'selector'},
-        audio: {type: 'selector'},
       },
       init: function () {
         this.video = this.data.video;
-        this.audio = this.data.audio;
+        if (!this.video) return;
 
-        // Pause media initially.
-        if (this.video) this.video.pause();
-        if (this.audio) this.audio.pause();
+        this.video.pause();
 
-        // Define functions to be called on find/loss.
-        this.onFound = () => {
-          if (this.video) this.video.play();
-          if (this.audio) this.audio.play();
-        };
-        this.onLost = () => {
-          if (this.video) this.video.pause();
-          if (this.audio) this.audio.pause();
-        };
+        // xrimagefound/xrimagelost fire on <a-scene>, not on the target element
+        this.onFound = () => { this.video.play(); };
+        this.onLost = () => { this.video.pause(); };
 
-        // Listen for events on the scene.
         this.el.sceneEl.addEventListener('xrimagefound', this.onFound);
         this.el.sceneEl.addEventListener('xrimagelost', this.onLost);
       },
       remove: function () {
-        // Clean up event listeners when the component is removed.
         if (this.video) this.video.pause();
-        if (this.audio) this.audio.pause();
         this.el.sceneEl.removeEventListener('xrimagefound', this.onFound);
         this.el.sceneEl.removeEventListener('xrimagelost', this.onLost);
       },
@@ -83,19 +70,13 @@
     <a-assets>
       <img id="frontview" src="../assets/Targets/Final/burger1.png" crossorigin="anonymous">
       <img id="background" src="../assets/Targets/Final/Background1.png" crossorigin="anonymous">
-
-      <!-- IMPORTANT: Make sure your video is compressed for mobile! -->
-      <!-- I removed 'autoplay' because the component now controls playback. -->
       <video id="main-video" src="../assets/Targets/Final/Video-1.mp4" autoplay loop muted playsinline crossorigin="anonymous"></video>
-
-      <!-- 1. Add your audio file here. Replace the src with your audio file path. -->
-      <audio id="background-sound" src="../assets/Targets/Final/Audio1.mp3" loop preload="auto" crossorigin="anonymous"></audio>
     </a-assets>
 
     <a-camera position="0 4 10"></a-camera>
 
     <!-- Apply the component here and link it to the video asset -->
-    <xrextras-named-image-target name="my-poster" media-control-on-scan="video: #main-video; audio: #background-sound">
+    <xrextras-named-image-target name="my-poster" video-playback-on-scan="video: #main-video;">
 
       <!-- Three instances of the same image, stacked along the Y-axis
            (perpendicular to the poster surface) with slight Z offsets -->
