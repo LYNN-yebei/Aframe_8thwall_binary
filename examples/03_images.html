@@ -70,6 +70,65 @@
     };
     window.XR8 ? onxrloaded() : window.addEventListener('xrloaded', onxrloaded);
   </script>
+
+  <!-- Chromakey Shader -->
+  <script>
+    AFRAME.registerShader('chromakey', {
+      schema: {
+        src: {type: 'map'},
+        color: {type: 'color', default: '#00FF00'},
+        chroma: {type: 'bool', default: true},
+        transparent: {default: true}
+      },
+
+      init: function (data) {
+        const videoEl = data.src;
+        if (!videoEl) { return; }
+
+        var videoTexture = new THREE.VideoTexture(videoEl);
+        videoTexture.minFilter = THREE.LinearFilter;
+        this.material = new THREE.ShaderMaterial({
+          transparent: data.transparent,
+          uniforms: {
+            chroma: { type: 'b', value: data.chroma },
+            color: { type: 'c', value: new THREE.Color(data.color) },
+            myTexture: { type: 't', value: videoTexture }
+          },
+          vertexShader: this.vertexShader,
+          fragmentShader: this.fragmentShader
+        });
+      },
+
+      update: function (data) {
+        this.material.uniforms.chroma.value = data.chroma;
+        this.material.uniforms.color.value.set(data.color);
+        this.material.transparent = data.transparent;
+      },
+
+      vertexShader: [
+        'varying vec2 vUv;',
+        'void main(void) {',
+        '  vUv = uv;',
+        '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+        '}'
+      ].join('\n'),
+
+      fragmentShader: [
+        'uniform sampler2D myTexture;',
+        'uniform vec3 color;',
+        'uniform bool chroma;',
+        'varying vec2 vUv;',
+        'void main(void) {',
+        '  vec3 tColor = texture2D(myTexture, vUv).rgb;',
+        '  float a = 1.0;',
+        '  if (chroma) {',
+        '    a = (length(tColor - color) - 0.6) * 7.0;',
+        '  }',
+        '  gl_FragColor = vec4(tColor, a);',
+        '}'
+      ].join('\n')
+    });
+  </script>
 </head>
 <body>
   <a-scene
@@ -104,7 +163,7 @@
       <!-- Instance 2 — middle layer -->
       <a-entity
         geometry="primitive: plane; width: 1; height: 1.5"
-        material="shader: chromakey; src: #main-video chroma: true; color: #00FF33;"
+        material="shader: chromakey; src: #main-video; chroma: true; color: #00FF33;"
         position="0 0.3 0.4">
       </a-entity>
 
